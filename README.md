@@ -1,18 +1,35 @@
 # Student Performance Prediction Using Machine Learning
 
+A machine learning project that analyzes and predicts students' final mathematics grades using demographic, family, social, and academic-related factors.
+
+The project compares multiple regression models and investigates which features contribute most to prediction performance.
+
+---
+
 ## 📌 Project Overview
 
-This project uses machine learning to analyze and predict students' final mathematics grades based on demographic, family, social, and academic-related factors.
+This project applies a complete machine learning workflow to the **Student Performance Dataset**.
 
-The project explores which factors are most associated with students' final performance and compares multiple regression models to determine which approach performs best.
+The analysis includes:
 
-The analysis was developed using Python and scikit-learn, with a focus on data preprocessing, exploratory data analysis, model evaluation, hyperparameter tuning, cross-validation, robustness testing, feature importance, and feature ablation.
+* Data exploration and preprocessing
+* Exploratory Data Analysis (EDA)
+* Regression modeling
+* Model comparison
+* Hyperparameter tuning
+* Cross-validation
+* Robustness testing
+* Feature importance analysis
+* Feature ablation
+* Prediction error analysis
+
+The goal is to understand the factors associated with student performance while building a model capable of predicting final mathematics grades.
 
 ---
 
 ## 🎯 Project Objectives
 
-The main objectives of this project were to:
+The main objectives were to:
 
 * Explore patterns in students' final mathematics grades.
 * Identify factors associated with academic performance.
@@ -28,22 +45,25 @@ The main objectives of this project were to:
 
 ## 📊 Dataset
 
-The project uses the **Student Performance Dataset** containing information about students' demographic, family, social, and academic characteristics.
+The project uses the **Student Performance Dataset**, containing demographic, family, social, and academic information about students.
 
-The dataset contains:
+### Dataset Summary
 
-* **395 students**
-* **33 columns**
-* **30 input features used for modeling**
-* **G3** as the prediction target
+| Property            | Value |
+| ------------------- | ----: |
+| Students            |   395 |
+| Original columns    |    33 |
+| Input features used |    30 |
+| Target variable     |    G3 |
+| Target range        |  0–20 |
 
 The target variable, `G3`, represents the student's final mathematics grade.
 
-### Important Modeling Decision
+### Important Modeling Decision: Preventing Target Leakage
 
 The variables `G1` and `G2` were intentionally removed from the machine-learning features.
 
-Although they are strong predictors of `G3`, including them would introduce **target leakage**, because they represent students' earlier grades from the same course.
+Although these variables are strong predictors of `G3`, including them would introduce **target leakage** because they represent earlier grades from the same course.
 
 Therefore:
 
@@ -52,7 +72,7 @@ X = df.drop(columns=["G1", "G2", "G3"])
 y = df["G3"]
 ```
 
-This allows the models to focus on demographic, behavioral, family, and other available student characteristics.
+This allows the model to focus on demographic, behavioral, family, and other available student characteristics.
 
 ---
 
@@ -70,15 +90,19 @@ This allows the models to focus on demographic, behavioral, family, and other av
 
 ## 🔍 Exploratory Data Analysis
 
-Several exploratory analyses were performed to understand the dataset and identify potential relationships with final grades.
+Several analyses were performed to understand the dataset and investigate relationships with final grades.
 
 ### Final Grade Distribution
 
-The final mathematics grade ranged from **0 to 20**, with:
+The final mathematics grade ranged from **0 to 20**.
 
-* Mean: **10.42**
-* Median: **11**
-* Most frequent grade: **10**
+| Statistic           | Value |
+| ------------------- | ----: |
+| Mean                | 10.42 |
+| Median              |    11 |
+| Most frequent grade |    10 |
+
+![Final Grade Distribution](graphs/final_grade_distribution.png)
 
 ### Previous Failures
 
@@ -93,6 +117,8 @@ Previous failures showed one of the strongest relationships with final performan
 
 Students with more previous failures generally had lower final grades.
 
+![Failures vs Final Grade](graphs/failures_vs_final.png)
+
 ### Study Time
 
 Students reporting higher study-time categories generally had somewhat higher average final grades.
@@ -104,14 +130,18 @@ Students reporting higher study-time categories generally had somewhat higher av
 |          3 |               11.40 |
 |          4 |               11.26 |
 
+![Study Time vs Final Grade](graphs/studytime_vs_final_grade.png)
+
 ### Higher Education Aspiration
 
-Students who indicated that they wanted to pursue higher education had a higher average final grade:
+Students who indicated that they wanted to pursue higher education had a higher average final grade.
 
 | Higher Education Aspiration | Average Final Grade |
 | --------------------------- | ------------------: |
 | No                          |                6.80 |
 | Yes                         |               10.61 |
+
+![Higher Education vs Final Grade](graphs/higher_education_vs_final_grade.png)
 
 ### Absences
 
@@ -123,13 +153,15 @@ The simple correlation between absences and final grade was approximately:
 
 This indicates a very weak linear relationship when considering the entire dataset.
 
-However, the machine-learning experiments showed that `absences` still contributed useful predictive information when combined with other features.
+However, the machine-learning experiments showed that `absences` still provided useful predictive information when combined with other features.
+
+![Absences vs Final Grade](graphs/absences_vs_final_grade.png)
 
 ---
 
 ## 🤖 Machine Learning Models
 
-Three regression algorithms were trained and evaluated:
+Three regression algorithms were trained and evaluated.
 
 ### 1. Linear Regression
 
@@ -142,6 +174,8 @@ Used to capture nonlinear relationships and interactions between student charact
 ### 3. Gradient Boosting Regression
 
 Used as another tree-based ensemble approach for comparison.
+
+### Train/Test Split
 
 The dataset was divided into:
 
@@ -168,17 +202,19 @@ The models were evaluated using:
 | **Random Forest** | **2.966** | **3.754** | **0.313** |
 | Gradient Boosting |     3.158 |     3.928 |     0.248 |
 
+![Model Performance Comparison](graphs/model_performance_comparison.png)
+
 ### Best Performing Model
 
 The **Random Forest Regressor** achieved the strongest performance on the test set.
 
-Its results were:
+| Metric | Random Forest |
+| ------ | ------------: |
+| MAE    |         2.966 |
+| RMSE   |         3.754 |
+| R²     |         0.313 |
 
-* **MAE:** 2.966
-* **RMSE:** 3.754
-* **R²:** 0.313
-
-This means the Random Forest model was generally able to predict final grades more accurately than the Linear Regression and Gradient Boosting models tested in this project.
+The Random Forest model generally predicted final grades more accurately than the Linear Regression and Gradient Boosting models tested in this project.
 
 ---
 
@@ -201,7 +237,7 @@ The best cross-validation MAE was approximately:
 2.895
 ```
 
-The tuned Random Forest achieved on the test set:
+The tuned Random Forest achieved:
 
 ```text
 MAE:  2.986
@@ -217,20 +253,18 @@ The tuned model performed very similarly to the original Random Forest, suggesti
 
 A 5-fold cross-validation experiment was performed on the Random Forest model.
 
-Results:
+| Metric             | Value |
+| ------------------ | ----: |
+| Mean CV MAE        | 2.900 |
+| Standard Deviation | 0.235 |
 
-```text
-Mean CV MAE: 2.900
-Standard Deviation: 0.235
-```
-
-The relatively small standard deviation indicates that the model's performance was reasonably consistent across the five folds.
+The relatively small standard deviation indicates that model performance was reasonably consistent across the five folds.
 
 ---
 
 ## 🧪 Robustness Testing
 
-To determine whether the model's performance depended heavily on a single train/test split, the models were evaluated using multiple random states:
+To determine whether model performance depended heavily on a single train/test split, the models were evaluated using multiple random states:
 
 ```text
 42, 10, 20, 30, 40
@@ -269,40 +303,33 @@ The most influential original features included:
 | Medu      |                  0.084 |
 | schoolsup |                  0.077 |
 
-The analysis suggests that previous failures and absences provided particularly useful information for predicting final grades in the model.
+`failures` and `absences` provided particularly useful predictive information in the model.
+
+![Random Forest Feature Importance](graphs/random_forest_feature_importance.png)
 
 ---
 
 ## 🧩 Feature Ablation Experiment
 
-A feature ablation experiment was performed to measure the importance of two major features: `failures` and `absences`.
+A feature ablation experiment was performed to measure the contribution of `failures` and `absences`.
 
 The full model was compared with a reduced model that excluded both features.
 
-### Full Model
+### Results
 
-```text
-MAE:  2.966
-RMSE: 3.754
-R²:   0.313
-```
+| Model                           |       MAE |      RMSE |        R² |
+| ------------------------------- | --------: | --------: | --------: |
+| Full Model                      | **2.966** | **3.754** | **0.313** |
+| Without `failures` & `absences` |     3.492 |     4.264 |     0.113 |
 
-### Reduced Model
+Removing the two features resulted in:
 
-```text
-MAE:  3.492
-RMSE: 4.264
-R²:   0.113
-```
+| Change       | Value |
+| ------------ | ----: |
+| MAE increase | 0.526 |
+| R² decrease  | 0.199 |
 
-Removing `failures` and `absences` resulted in:
-
-```text
-MAE increase: 0.526
-R² decrease:  0.199
-```
-
-This experiment provides additional evidence that these features contribute substantially to the model's predictive performance.
+This provides additional evidence that `failures` and `absences` contribute substantially to the model's predictive performance.
 
 ---
 
@@ -314,7 +341,9 @@ The model struggled particularly with some extreme outcomes, including students 
 
 For example, some students with an actual grade of **0** were predicted to have grades around **8–11**.
 
-This highlights an important limitation of the model: it tends to perform better around the central range of the grade distribution and has difficulty predicting some extreme cases.
+This highlights an important limitation: the model performs better around the central range of the grade distribution and has difficulty predicting some extreme cases.
+
+![Actual vs Predicted Grades](graphs/actual_vs_predicted_grades.png)
 
 ---
 
@@ -386,13 +415,11 @@ pip install -r requirements.txt
 python student_analysis.py
 ```
 
-The script performs the complete analysis and generates the visualizations inside the `graphs/` directory.
+The script performs the complete analysis and generates visualizations inside the `graphs/` directory.
 
 ---
 
 ## 💡 Key Findings
-
-The main findings from the project are:
 
 1. **Random Forest performed best** among the three tested models.
 2. Previous failures showed a strong negative relationship with final academic performance.
@@ -410,11 +437,11 @@ This project has several limitations:
 
 * The dataset contains only 395 students.
 * The model explains only part of the variation in final grades.
-* Some important factors affecting academic performance may not be included in the dataset.
+* Some important factors affecting academic performance may not be included.
 * The dataset represents students from a specific educational context and may not generalize to every population.
 * Predicting extreme grades remains challenging.
 
-Therefore, the model should be viewed as an analytical and educational machine-learning project rather than a system for making high-stakes decisions about students.
+Therefore, the model should be viewed as an **analytical and educational machine-learning project**, rather than a system for making high-stakes decisions about students.
 
 ---
 
@@ -433,7 +460,7 @@ Possible future improvements include:
 
 ---
 
-## 📚 Skills Demonstrated 
+## 📚 Skills Demonstrated
 
 This project demonstrates practical experience with:
 
