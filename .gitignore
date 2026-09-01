@@ -16,3 +16,7 @@ ENV/
 
 .DS_Store
 Thumbs.db 
+
+student-merge.R
+student-por.csv
+student.txt
