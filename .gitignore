@@ -15,8 +15,9 @@ ENV/
 *.log
 
 .DS_Store
-Thumbs.db 
+Thumbs.db
 
 student-merge.R
 student-por.csv
 student.txt
+student_analysis_backup.py

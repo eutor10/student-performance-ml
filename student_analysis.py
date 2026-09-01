@@ -134,13 +134,26 @@ absence_correlation = df["absences"].corr(df["G3"])
 
 print("Correlation between absences and final grade:")
 print(absence_correlation)
-# Calculate the correlation between absences and final grade
-absence_correlation = df["absences"].corr(df["G3"])
 
-print("\n--- ABSENCES VS FINAL GRADE ---")
-print("Correlation between absences and final grade:")
-print(absence_correlation)
+# Create a scatter plot
+plt.figure(figsize=(10, 6))
 
+plt.scatter(df["absences"], df["G3"])
+
+plt.title("Absences vs Final Mathematics Grade")
+plt.xlabel("Number of Absences")
+plt.ylabel("Final Grade (G3)")
+
+plt.tight_layout()
+
+plt.savefig(
+    "graphs/absences_vs_final_grade.png",
+    dpi=300,
+    bbox_inches="tight"
+)
+plt.close()
+
+print("\nGraph saved as absences_vs_final_grade.png")
 
 # Create a scatter plot
 
@@ -158,7 +171,6 @@ plt.tight_layout()
 plt.savefig("graphs/absences_vs_final_grade.png", dpi=300, bbox_inches="tight")
 plt.close()
 
-print("\nGraph saved as absences_vs_final_grade.png")
 print("\n--- MOTHER'S EDUCATION VS FINAL GRADE ---")
 
 medu_analysis = df.groupby("Medu")["G3"].agg(
@@ -295,7 +307,7 @@ print(X.shape[1])
 print("\nNumber of target values:")
 print(y.shape[0])
 # Identify categorical and numerical columns
-categorical_columns = X.select_dtypes(include=["object"]).columns.tolist()
+categorical_columns = X.select_dtypes(include=["str"]).columns.tolist()
 numerical_columns = X.select_dtypes(exclude=["object"]).columns.tolist()
 
 print("\nCategorical columns:")
@@ -303,7 +315,6 @@ print(categorical_columns)
 
 print("\nNumerical columns:")
 print(numerical_columns)
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
 
 # Preprocessing pipeline
@@ -315,7 +326,6 @@ preprocessor = ColumnTransformer(
 )
 
 print("\nPreprocessing pipeline created successfully.")
-from sklearn.model_selection import train_test_split
 
 # Split the dataset into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(
@@ -356,7 +366,6 @@ print(y_test.head(10).values)
 
 print("\nPredicted grades:")
 print(y_pred[:10])
-import numpy as np
 
 # Calculate evaluation metrics
 mae = mean_absolute_error(y_test, y_pred)
@@ -497,7 +506,7 @@ grid_search = GridSearchCV(
     param_grid=param_grid,
     cv=5,
     scoring="neg_mean_absolute_error",
-    n_jobs=-1
+    n_jobs=1
 )
 
 # Train and search for the best combination
@@ -534,7 +543,7 @@ cv_scores = cross_val_score(
     y_train,
     cv=5,
     scoring="neg_mean_absolute_error",
-    n_jobs=-1
+    n_jobs=1
 )
 
 cv_mae_scores = -cv_scores
@@ -729,7 +738,6 @@ print(
     "Gradient Boosting Average R²:",
     robustness_df["Gradient Boosting R2"].mean()
 )
-from sklearn.inspection import permutation_importance
 
 print("\n--- PERMUTATION FEATURE IMPORTANCE ---")
 
@@ -741,7 +749,7 @@ perm_result = permutation_importance(
     n_repeats=10,
     random_state=42,
     scoring="neg_mean_absolute_error",
-    n_jobs=-1
+    n_jobs=1
 )
 
 # Permutation importance works with the original input features
@@ -890,7 +898,7 @@ numerical_reduced = X_reduced.select_dtypes(
 preprocessor_reduced = ColumnTransformer(
     transformers=[
         ("numerical",
-         StandardScaler(),
+         "passthrough",
          numerical_reduced),
 
         ("categorical",
@@ -964,9 +972,9 @@ model_names = [
 ]
 
 model_mae = [
-    3.39526092580192,
-    2.965949367088607,
-    3.1576782151623157
+    mae,
+    rf_mae,
+    gb_mae
 ]
 
 plt.figure(figsize=(10, 6))
@@ -1012,9 +1020,9 @@ model_names = [
 ]
 
 model_r2 = [
-    0.14149247411195787,
-    0.31274095935048307,
-    0.2475955462512971
+    r2,
+    rf_r2,
+    gb_r2
 ]
 
 plt.figure(figsize=(10, 6))
